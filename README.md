@@ -1,6 +1,6 @@
 # Rule of Four
 
-Determine the most resonable display format for a given numeric value.
+Determine the most resonable display format for a given numeric value. Using a modified version of the [rule of four](http://www.bmj.com/content/350/bmj.h1845)
 
 ## Rule of Four
 
