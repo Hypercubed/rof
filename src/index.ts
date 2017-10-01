@@ -2,23 +2,26 @@ export function format(x: number): string {
   return isInteger(x) ? formatInteger(x) : formatDecimal(x);
 }
 
-export function formatInteger(x) {
+export function formatInteger(x: number): string {
   if (Object.is(x, -0)) {
     return '-0';
   }
 
   const N = getFirstDigit(x) < 4 ? 3 : 2;
  
-  const exp = x.toExponential(N);
+  const exp = Math.round(x).toExponential(N);
   const rnd  = Math.round(x).toLocaleString();
 
-  // Return the smaller of exponential notation or "rule of four"
+  // Return the smaller of exponential notation or rounded value
   return exp.length < rnd.length ? exp : rnd;
 }
 
-export function formatDecimal(x) {
+export function formatDecimal(x: number): string {
   if (x === Infinity || x === -Infinity) {
     return x.toLocaleString();
+  }
+  if (Object.is(x, -0)) {
+    return '-0.00';
   }
   const N = getFirstDigit(x) < 4 ? 3 : 2;
  
@@ -32,18 +35,19 @@ export function formatDecimal(x) {
 // rule of four:
 // * uses three decimal places for ratios in the range 0.040-0.399
 // * two decimals for 0.40-3.99, one decimal for 4.0-39.9, etc
-export function ruleOfFour(x) {
+export function ruleOfFour(x: number): string {
   const abs = Math.abs(x);
   const char = getFirstDigit(x);
   const N = char < 4 ? 3 : 2;
   return x.toPrecision(N);
 }
 
-function getFirstDigit(x) {
+function getFirstDigit(x: number): number {
   const match = ('' + x).match(/[1-9]/);
   return match ? +match[0] : 0;
 }
 
-function isInteger(x) {
+function isInteger(x: number | string): boolean {
+  x = '' + x;
   return parseInt(x, undefined) === parseFloat(x);
 }

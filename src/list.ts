@@ -1,6 +1,6 @@
-import { ruleOfFour, format } from '.';
+import { ruleOfFour, format, formatInteger, formatDecimal } from '.';
 
-const headings = ['Input Value', 'toLocaleString', 'toPrecision (N=3)', 'Rule of Four', 'Rule of Four (Modified)'];
+const headings = ['Input Value', 'toLocaleString', 'toPrecision (N=3)', 'Rule of Four', 'format'];
 
 const ms = [0, 1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -5, -6, -7, -8];
 const ns = [1, 5];
@@ -11,12 +11,12 @@ console.log(formatRow(headings));
 console.log(formatRow(headings.map(x => x.replace(/./g, '-'))));
 
 printRow(0.04);
-printRow(0.399);
+printRow(0.2);
 printRow(0.4);
-printRow(3.99);
-printRow(4.001);
-printRow(39.9);
-printRow(40.001);
+printRow(2);
+printRow(4);
+printRow(20);
+printRow(40);
 
 // integers
 console.log('\n ** Integers **');
@@ -67,9 +67,10 @@ function printRow(x, v = +x) {
 }
 
 function formatRow(row) {
-  return row
+  const ret = row
     .map((x, i) => leftpad(x, i === 0 ? 25 : 20))
     .join(' | ');
+  return `| ${ret} |`;
 }
 
 function leftpad(str, len, ch = ' ') {

@@ -1,5 +1,5 @@
 import { test } from 'ava';
-import { format, ruleOfFour } from '.';
+import { format, ruleOfFour, formatDecimal } from '.';
 
 test('should work for zero and neg zero', t => {
   t.is(format(0), '0');
@@ -79,4 +79,9 @@ test('rule of four', t => {
   t.is(ruleOfFour(4.001), '4.0');
   t.is(ruleOfFour(39.9), '39.9');
   t.is(ruleOfFour(40.001), '40');
+});
+
+test('formatDecimal', t => {
+  t.is(formatDecimal(0), '0.00');
+  t.is(formatDecimal(-0), '-0.00');
 });
