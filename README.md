@@ -69,9 +69,9 @@ The `formatDecimal` function returns the value formatted with the following rule
 * Returns `-0.00` if the value is `-0`
 * Returns a string that is the smaller of the following:
   * The result of `x.toExponential(N)` where N is the presision following the rule of four.
-  * If `Math.abs(x) >= 0.4`:
-    * `x.toFixed(2)`
-    * `x.toPrecision(N)` where N is the presision following the rule of four.
+  * If:
+    * `Math.abs(x) >= 0.4`: `x.toFixed(2)`
+    * Otherwise, `x.toPrecision(N)` where N is the presision following the rule of four.
 
 | Input Value |       toLocaleString |    toPrecision (N=3) |        formatDecimal |
 | ----------- |       -------------- |    ----------------- |        ------------- |
