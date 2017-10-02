@@ -26,10 +26,12 @@ export function formatDecimal(x: number): string {
   const N = getFirstDigit(x) < 4 ? 3 : 2;
  
   const exp = x.toExponential(N);
-  const rnd = Math.abs(x) >= 0.4 ? x.toFixed(2) : x.toPrecision(N);
+  const rnd = Math.abs(x) >= 0.4 ?
+    x.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) :
+    x.toPrecision(N);
   
   // Return the smaller of exponential notation or "rule of four"
-  return exp.length < rnd.length ? exp : rnd;
+  return exp.length + 1 < rnd.length ? exp : rnd;
 }
 
 // rule of four:
