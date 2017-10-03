@@ -3,35 +3,46 @@ export function format(x: number): string {
 }
 
 export function formatInteger(x: number): string {
+  x = Math.round(x);
+
   if (Object.is(x, -0)) {
     return '-0';
   }
 
-  const N = getFirstDigit(x) < 4 ? 3 : 2;
- 
-  const exp = Math.round(x).toExponential(N);
-  const rnd  = Math.round(x).toLocaleString();
+  const localeString  = x.toLocaleString();
+
+  if (localeString.length <= 9) {
+    return localeString;
+  }
 
   // Return the smaller of exponential notation or rounded value
-  return exp.length < rnd.length ? exp : rnd;
+  const N = getRofPrecision(x);
+  const exponential = x.toExponential(N);
+  return x.toExponential(N);
 }
 
 export function formatDecimal(x: number): string {
-  if (x === Infinity || x === -Infinity) {
-    return x.toLocaleString();
-  }
   if (Object.is(x, -0)) {
     return '-0.00';
   }
-  const N = getFirstDigit(x) < 4 ? 3 : 2;
- 
-  const exp = x.toExponential(N);
-  const rnd = Math.abs(x) >= 0.4 ?
-    x.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) :
-    x.toPrecision(N);
-  
-  // Return the smaller of exponential notation or "rule of four"
-  return exp.length + 1 < rnd.length ? exp : rnd;
+
+  let localeString;
+  let N;
+
+  if (Math.abs(x) >= 0.4) {
+    localeString = x.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  } else {
+    N = getRofPrecision(x);
+    localeString = x.toPrecision(N);
+  }
+
+  if (localeString.length <= 9) {
+    return localeString;
+  }
+
+  N = N || getRofPrecision(x);
+
+  return x.toExponential(N);
 }
 
 // rule of four:
@@ -39,14 +50,14 @@ export function formatDecimal(x: number): string {
 // * two decimals for 0.40-3.99, one decimal for 4.0-39.9, etc
 export function ruleOfFour(x: number): string {
   const abs = Math.abs(x);
-  const char = getFirstDigit(x);
-  const N = char < 4 ? 3 : 2;
+  const N = getRofPrecision(x);
   return x.toPrecision(N);
 }
 
-function getFirstDigit(x: number): number {
+function getRofPrecision(x: number): number {
   const match = ('' + x).match(/[1-9]/);
-  return match ? +match[0] : 0;
+  const char = match ? +match[0] : 0;
+  return char < 4 ? 3 : 2;
 }
 
 function isInteger(x: number | string): boolean {
