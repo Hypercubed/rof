@@ -1,6 +1,6 @@
 # Rule of Four
 
-Determine the most resonable display format for a given numeric value. Using a modified version of the [rule of four](http://www.bmj.com/content/350/bmj.h1845) and other methods.
+Determine the most reasonable display format for a given numeric value. Using a modified version of the [rule of four](http://www.bmj.com/content/350/bmj.h1845) and other methods.
 
 Goals:
   * Preserve display for integers and floats.
@@ -8,7 +8,7 @@ Goals:
   * Display the smaller of fixed or exponential formatting.
 
 Coming soon?
-  * Detemine optimal format give an array of values.
+  * Determine optimal format give an array of values.
 
 ## Rule of Four (`ruleOfFour` function)
 
@@ -165,8 +165,6 @@ Other sample outputs below:
 |                 -32706951 |          -32,706,951 |             -3.27e+7 |             -3.27e+7 |            -3.271e+7 |
 |                 -70843501 |          -70,843,501 |             -7.08e+7 |              -7.1e+7 |             -7.08e+7 |
 |                -438418013 |         -438,418,013 |             -4.38e+8 |              -4.4e+8 |             -4.38e+8 |
-
-
 
 ### Floats
 
