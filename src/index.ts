@@ -15,9 +15,7 @@ export function formatInteger(x: number): string {
     return localeString;
   }
 
-  // Return the smaller of exponential notation or rounded value
   const N = getRofPrecision(x);
-  const exponential = x.toExponential(N);
   return x.toExponential(N);
 }
 
@@ -41,7 +39,6 @@ export function formatDecimal(x: number): string {
   }
 
   N = N || getRofPrecision(x);
-
   return x.toExponential(N);
 }
 
@@ -49,7 +46,6 @@ export function formatDecimal(x: number): string {
 // * uses three decimal places for ratios in the range 0.040-0.399
 // * two decimals for 0.40-3.99, one decimal for 4.0-39.9, etc
 export function ruleOfFour(x: number): string {
-  const abs = Math.abs(x);
   const N = getRofPrecision(x);
   return x.toPrecision(N);
 }

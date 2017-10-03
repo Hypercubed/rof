@@ -3,6 +3,7 @@ build
 dist
 test
 src/**.js
+.vscode/
 
 coverage
 .nyc_output
