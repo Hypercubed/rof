@@ -11,12 +11,9 @@ export function formatInteger(x: number): string {
 
   const localeString  = x.toLocaleString();
 
-  if (localeString.length <= 9) {
-    return localeString;
-  }
-
-  const N = getRofPrecision(x);
-  return x.toExponential(N);
+  return (localeString.length <= 9) ?
+    localeString :
+    formatFloat(x);
 }
 
 export function formatDecimal(x: number): string {
@@ -34,12 +31,14 @@ export function formatDecimal(x: number): string {
     localeString = x.toPrecision(N);
   }
 
-  if (localeString.length <= 9) {
-    return localeString;
-  }
+  return (localeString.length <= 9) ?
+    localeString :
+    formatFloat(x, N);
+}
 
+function formatFloat(x: number, N?: number): string {
   N = N || getRofPrecision(x);
-  return x.toExponential(N);
+  return x.toExponential(N - 1);
 }
 
 // rule of four:

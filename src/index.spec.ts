@@ -128,21 +128,21 @@ test('should work for negitive integers', t => {
 test('should work for large integers', t => {
   t.is(format(1234567), '1,234,567');
   t.is(format(4234567), '4,234,567');
-  t.is(format(12345678), '1.235e+7');
-  t.is(format(42345678), '4.23e+7');
-  t.is(format(-1234567), '-1.235e+6');
-  t.is(format(-4234567), '-4.23e+6');
-  t.is(format(-12345678), '-1.235e+7');
-  t.is(format(-42345678), '-4.23e+7');
+  t.is(format(12345678), '1.23e+7');
+  t.is(format(42345678), '4.2e+7');
+  t.is(format(-1234567), '-1.23e+6');
+  t.is(format(-4234567), '-4.2e+6');
+  t.is(format(-12345678), '-1.23e+7');
+  t.is(format(-42345678), '-4.2e+7');
 });
 
 test('should work for large decimals', t => {
-  t.is(format(1234567.89), '1.235e+6');
-  t.is(format(4234567.89), '4.23e+6');
-  t.is(format(12345678.89), '1.235e+7');
-  t.is(format(42345678.89), '4.23e+7');
-  t.is(format(-1234567.89), '-1.235e+6');
-  t.is(format(-4234567.89), '-4.23e+6');
-  t.is(format(-12345678.89), '-1.235e+7');
-  t.is(format(-42345678.89), '-4.23e+7');
+  t.is(format(1234567.89), '1.23e+6');
+  t.is(format(4234567.89), '4.2e+6');
+  t.is(format(12345678.89), '1.23e+7');
+  t.is(format(42345678.89), '4.2e+7');
+  t.is(format(-1234567.89), '-1.23e+6');
+  t.is(format(-4234567.89), '-4.2e+6');
+  t.is(format(-12345678.89), '-1.23e+7');
+  t.is(format(-42345678.89), '-4.2e+7');
 });
