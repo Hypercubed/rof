@@ -1,4 +1,4 @@
-import { ruleOfFour, format, formatInteger, formatDecimal, formatFloat } from '.';
+import { ruleOfFour, format, formatInteger, formatDecimal, formatFloat, Rof } from '.';
 
 const headings = ['Input Value', 'toLocaleString', 'toPrecision (N=3)', 'Rule of Four', 'format'];
 

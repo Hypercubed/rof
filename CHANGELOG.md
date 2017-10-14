@@ -3,6 +3,7 @@ CHANGELOG
 
 ## HEAD (Unreleased)
 * Feature: exposed formatFloat method
+* Feature: constructor signiture now matches NumberFormat constructor"
 
 --------------------
 

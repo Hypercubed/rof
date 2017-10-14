@@ -188,12 +188,22 @@ test('#format, special', t => {
 
 // Constructor
 
+test('Constructor #ruleOfFour, defaults', t => {
+  const rof = new Rof();
+  t.is(rof.ruleOfFour(0.04), '0.040');
+  t.is(rof.ruleOfFour(0.2), '0.200');
+  t.is(rof.ruleOfFour(2), '2.00');
+  t.is(rof.ruleOfFour(4), '4.0');
+  t.is(rof.ruleOfFour(20), '20.0');
+  t.is(rof.ruleOfFour(40), '40');
+});
+
 test('Constructor #ruleOfFour', t => {
-  const rof = new Rof(4);
+  const rof = new Rof(undefined, {minimumSignificantDigits: 4, maximumSignificantDigits: 6});
   t.is(rof.ruleOfFour(0.04), '0.04000');
-  t.is(rof.ruleOfFour(0.2), '0.20000');
-  t.is(rof.ruleOfFour(2), '2.0000');
+  t.is(rof.ruleOfFour(0.2), '0.200000');
+  t.is(rof.ruleOfFour(2), '2.00000');
   t.is(rof.ruleOfFour(4), '4.000');
-  t.is(rof.ruleOfFour(20), '20.000');
+  t.is(rof.ruleOfFour(20), '20.0000');
   t.is(rof.ruleOfFour(40), '40.00');
 });
