@@ -1,5 +1,5 @@
 import { test } from 'ava';
-import { format, ruleOfFour, formatInteger, formatDecimal, formatFloat, Rof } from '.';
+import { format, ruleOfFour, formatInteger, formatDecimal, formatFloat, pickFormat, Rof } from '.';
 
 // role of four
 
@@ -206,4 +206,32 @@ test('Constructor #ruleOfFour', t => {
   t.is(rof.ruleOfFour(4), '4.000');
   t.is(rof.ruleOfFour(20), '20.0000');
   t.is(rof.ruleOfFour(40), '40.00');
+});
+
+// Best
+test('#pickFormat', t => {
+  // integers
+  t.deepEqual(_([ 0,   1,   2,   3,   -1,   -2,   -3]),   
+                ['0', '1', '2', '3', '-1', '-2', '-3']);
+
+  // floats (integers) 
+  t.deepEqual(_([0,          1,         2,         3,         123456789, -123456789]),  
+                ['0.00e+0', '1.00e+0', '2.00e+0', '3.00e+0', '1.23e+8', '-1.23e+8']);
+
+  // precision (decimals)    
+  t.deepEqual(_([ 0,      1,      2,      3,      0.4,    -0.4,    3.1,    -3.1]),
+                ['0.00', '1.00', '2.00', '3.00', '0.40', '-0.40', '3.10', '-3.10']);
+
+  // decimals  
+  t.deepEqual(_([ 0,      1,      2,      3,      0.1,     0.001]),
+                ['0.00', '1.00', '2.00', '3.00', '0.100', '0.00100']);
+
+  // floats (decimals)
+  t.deepEqual(_([0,         1,         2,         3,         0.1,       0.001,     1e-7,      -1e-7]),      
+               ['0.00e+0', '1.00e+0', '2.00e+0', '3.00e+0', '1.00e-1', '1.00e-3', '1.00e-7', '-1.00e-7']);
+
+  function _(arr) {
+    const fn = pickFormat(arr);
+    return arr.map(fn);
+  }
 });

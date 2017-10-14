@@ -91,6 +91,39 @@ export class Rof {
     const N = this.getRofPrecision(x);
     return x.toPrecision(N);
   }
+
+  pickFormat(arr: number[]): string | any {
+    const decimals = x => this.formatDecimal(x);
+    const integers = x => this.formatInteger(x);
+    const floats = x => this.formatFloat(x);
+
+    const stats = this.getStats(arr);
+    if (stats.integers) return (stats.maxLog > 6) ? floats : integers;
+    if (stats.maxLog >= 6 || stats.minLog <= -6) {
+      return floats;
+    }
+    return decimals;
+  }
+
+  private getStats(arr: number[]): any {
+    let integers = true;
+    let minLog = Infinity;
+    let maxLog = -Infinity;
+
+    arr.forEach(n => {
+      integers = integers && this.isInteger(n);
+
+      const l = n === 0 ? 1 : Math.log10(Math.abs(n));
+      minLog = Math.min(l, minLog);
+      maxLog = Math.max(l, maxLog);
+    });
+
+    return {
+      integers,
+      minLog,
+      maxLog
+    };
+  }
   
   private getRofPrecision(x: number): number {
     const match = ('' + x).match(/[1-9]/);
@@ -112,3 +145,4 @@ export const formatDecimal = x => rof.formatDecimal(x);
 export const formatInteger = x => rof.formatInteger(x);
 export const formatFloat = x => rof.formatFloat(x);
 export const format = x => rof.format(x);
+export const pickFormat = x => rof.pickFormat(x);
