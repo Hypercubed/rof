@@ -10,7 +10,19 @@ Goals:
 Coming soon?
   * Determine optimal format give an array of values.
 
-## Rule of Four (`ruleOfFour` function)
+# Methods
+
+**`ruleOfFour`:** Formats a value as a decimal using the strict rule of four to detemine the precision.
+
+**`formatFloat`:** Formats a value as a float (exponential) using the four to detemine the precision.
+
+**`formatInteger`:** Formats a value as an integer or float (using `formatFloat`) for large or small values.
+
+**`formatDecimal`:** Formats a value as a decimal or float (using `formatFloat`) for large or small values.
+
+**`format`:** Formats a value as an integer (using `formatInteger`) or a decimal (using `formatDecimal`) if the value is not an integer.
+
+## `ruleOfFour` function
 
 ```
 ruleOfFour(x: number): string
@@ -37,6 +49,35 @@ ruleOfFour(x: number): string
 |                  Infinity |                    ∞ |             Infinity |             Infinity |
 |                 -Infinity |                   -∞ |            -Infinity |            -Infinity |
 
+## `formatFloat` function
+
+```
+formatFloat(x: number): string
+```
+
+The `formatFloat` function returns the value formatted with the following rules:
+
+* `-0.00e+0` if the value is `-0`.
+* `x.toExponential(N)` (where N is the precision following the rule of four) otherwise
+
+|               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |          formatFloat |
+|               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
+|                      0.04 |                 0.04 |               0.0400 |                0.040 |               4.0e-2 |
+|                       0.2 |                  0.2 |                0.200 |                0.200 |              2.00e-1 |
+|                       0.4 |                  0.4 |                0.400 |                 0.40 |               4.0e-1 |
+|                   2.00001 |                    2 |                 2.00 |                 2.00 |              2.00e+0 |
+|                   4.00001 |                    4 |                 4.00 |                  4.0 |               4.0e+0 |
+|                   20.0001 |                   20 |                 20.0 |                 20.0 |              2.00e+1 |
+|                   40.0001 |                   40 |                 40.0 |                   40 |               4.0e+1 |
+|                         2 |                    2 |                 2.00 |                 2.00 |              2.00e+0 |
+|                         4 |                    4 |                 4.00 |                  4.0 |               4.0e+0 |
+|                        20 |                   20 |                 20.0 |                 20.0 |              2.00e+1 |
+|                        40 |                   40 |                 40.0 |                   40 |               4.0e+1 |
+|                         0 |                    0 |                 0.00 |                 0.00 |              0.00e+0 |
+|                        -0 |                    0 |                 0.00 |                 0.00 |              0.00e+0 |
+|                  Infinity |                    ∞ |             Infinity |             Infinity |             Infinity |
+|                 -Infinity |                   -∞ |            -Infinity |            -Infinity |            -Infinity |
+
 ## `formatInteger` function
 
 ```
@@ -47,7 +88,7 @@ The `formatInteger` function returns the value formatted with the following rule
 
 * `-0` if the `Math.round(x)` is `-0`.
 * `Math.round(x).toLocaleString()` if the character length is <= 9.
-* `Math.round(x).toExponential(N)` (where N is the precision following the rule of four) otherwise.
+* `formatFloat(Math.round(x))` otherwise.
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |        formatInteger |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -78,7 +119,7 @@ The `formatDecimal` function returns the value formatted with the following rule
 * `-0.00` if the value is `-0`.
 * `x.toPrecision(N)` (where N is the precision following the rule of four) if `Math.abs(x) < 0.4` and the character length is <= 9.
 * `x.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})` if `Math.abs(x) >= 0.4` and the character length is <= 9.
-* `x.toExponential(N)` (where N is the precision following the rule of four) otherwise
+* `formatFloat(x)` otherwise.
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |        formatDecimal |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -166,7 +207,7 @@ Other sample outputs below:
 |                 -63377713 |          -63,377,713 |             -6.34e+7 |              -6.3e+7 |              -6.3e+7 |
 |                -314199248 |         -314,199,248 |             -3.14e+8 |             -3.14e+8 |             -3.14e+8 |
 
-### Decimals
+### Decimals and Floats
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |               format |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |

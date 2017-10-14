@@ -1,8 +1,13 @@
-class Rof {
-  constructor(public precision) {}
+export class Rof {
+  static isInteger(x: number | string): boolean {
+    x = '' + x;
+    return parseInt(x, undefined) === parseFloat(x);
+  }
+
+  constructor(public basePrecision = 2) {}
 
   format(x: number): string {
-    return isInteger(x) ? formatInteger(x) : formatDecimal(x);
+    return Rof.isInteger(x) ? this.formatInteger(x) : this.formatDecimal(x);
   }
   
   formatInteger(x: number): string {
@@ -14,14 +19,14 @@ class Rof {
   
     const localeString  = x.toLocaleString();
   
-    return (localeString.length <= (7 + this.precision)) ?
+    return (localeString.length <= (7 + this.basePrecision)) ?
       localeString :
       this.formatFloat(x);
   }
-  
+
   formatDecimal(x: number): string {
     if (Object.is(x, -0)) {
-      return '-0.' + '0'.repeat(this.precision);
+      return `-${x.toPrecision(this.basePrecision + 1)}`;
     }
   
     let localeString;
@@ -29,20 +34,23 @@ class Rof {
   
     if (Math.abs(x) >= 0.4) {
       localeString = x.toLocaleString(undefined, {
-        minimumFractionDigits: this.precision,
-        maximumFractionDigits: this.precision
+        minimumFractionDigits: this.basePrecision,
+        maximumFractionDigits: this.basePrecision
       });
     } else {
       N = this.getRofPrecision(x);
       localeString = x.toPrecision(N);
     }
   
-    return (localeString.length <= (7 + this.precision)) ?
+    return (localeString.length <= (7 + this.basePrecision)) ?
       localeString :
       this.formatFloat(x, N);
   }
   
   formatFloat(x: number, N?: number): string {
+    if (Object.is(x, -0)) {
+      return `-${x.toExponential(this.basePrecision)}`;
+    }
     N = N || this.getRofPrecision(x);
     return x.toExponential(N - 1);
   }
@@ -58,25 +66,14 @@ class Rof {
   private getRofPrecision(x: number): number {
     const match = ('' + x).match(/[1-9]/);
     const char = match ? +match[0] : 0;
-    return this.precision + (char < 4 ? 1 : 0);
+    return this.basePrecision + (char < 4 ? 1 : 0);
   }
 }
 
-function isInteger(x: number | string): boolean {
-  x = '' + x;
-  return parseInt(x, undefined) === parseFloat(x);
-}
+const rof = new Rof();
 
-const rof = new Rof(2);
-
-const ruleOfFour = rof.ruleOfFour.bind(rof);
-const formatDecimal = rof.formatDecimal.bind(rof);
-const formatInteger = rof.formatInteger.bind(rof);
-const format = rof.format.bind(rof);
-
-export {
-  ruleOfFour,
-  formatDecimal,
-  formatInteger,
-  format
-};
+export const ruleOfFour = x => rof.ruleOfFour(x);
+export const formatDecimal = x => rof.formatDecimal(x);
+export const formatInteger = x => rof.formatInteger(x);
+export const formatFloat = x => rof.formatFloat(x);
+export const format = x => rof.format(x);

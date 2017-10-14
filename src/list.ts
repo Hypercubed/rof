@@ -1,4 +1,4 @@
-import { ruleOfFour, format, formatInteger, formatDecimal } from '.';
+import { ruleOfFour, format, formatInteger, formatDecimal, formatFloat } from '.';
 
 const headings = ['Input Value', 'toLocaleString', 'toPrecision (N=3)', 'Rule of Four', 'format'];
 
@@ -47,6 +47,27 @@ printRow(0, undefined, formatInteger);
 printRow('-0', undefined, formatInteger);
 printRow(Infinity, undefined, formatInteger);
 printRow(-Infinity, undefined, formatInteger);
+
+console.log('\n## formatFloat\n');
+
+console.log(formatRow([...headings.slice(0, 4), 'formatFloat']));
+console.log(formatRow(headings.map(x => x.replace(/./g, '-'))));
+
+printRow(0.04, undefined, formatFloat);
+printRow(0.2, undefined, formatFloat);
+printRow(0.4, undefined, formatFloat);
+printRow(2.00001, undefined, formatFloat);
+printRow(4.00001, undefined, formatFloat);
+printRow(20.0001, undefined, formatFloat);
+printRow(40.0001, undefined, formatFloat);
+printRow(2, undefined, formatFloat);
+printRow(4, undefined, formatFloat);
+printRow(20, undefined, formatFloat);
+printRow(40, undefined, formatFloat);
+printRow(0, undefined, formatFloat);
+printRow('-0', undefined, formatFloat);
+printRow(Infinity, undefined, formatFloat);
+printRow(-Infinity, undefined, formatFloat);
 
 console.log('\n## formatDecimal\n');
 

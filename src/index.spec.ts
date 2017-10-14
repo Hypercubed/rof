@@ -1,5 +1,5 @@
 import { test } from 'ava';
-import { format, ruleOfFour, formatInteger, formatDecimal } from '.';
+import { format, ruleOfFour, formatInteger, formatDecimal, formatFloat, Rof } from '.';
 
 // role of four
 
@@ -21,14 +21,37 @@ test('ruleOfFour, negitive values', t => {
   t.is(ruleOfFour(-40), '-40');
 });
 
-// format integer
+// format floats
 
-test('formatInteger, zero', t => {
+test('#formatFloat, zero', t => {
+  t.is(formatFloat(0), '0.00e+0');
+  t.is(formatFloat(-0), '-0.00e+0');
+});
+
+test('#formatFloat', t => {
+  t.is(formatFloat(0.04), '4.0e-2');
+  t.is(formatFloat(2), '2.00e+0');
+  t.is(formatFloat(4), '4.0e+0');
+  t.is(formatFloat(20), '2.00e+1');
+  t.is(formatFloat(40), '4.0e+1');
+});
+
+test('#formatFloat, negitive values', t => {
+  t.is(formatFloat(-0.04), '-4.0e-2');
+  t.is(formatFloat(-2), '-2.00e+0');
+  t.is(formatFloat(-4), '-4.0e+0');
+  t.is(formatFloat(-20), '-2.00e+1');
+  t.is(formatFloat(-40), '-4.0e+1');
+});
+
+// format integers
+
+test('#formatInteger, zero', t => {
   t.is(formatInteger(0), '0');
   t.is(formatInteger(-0), '-0');
 });
 
-test('ruleOfFour', t => {
+test('#formatInteger', t => {
   t.is(formatInteger(0.04), '0');
   t.is(formatInteger(2), '2');
   t.is(formatInteger(4), '4');
@@ -36,7 +59,7 @@ test('ruleOfFour', t => {
   t.is(formatInteger(40), '40');
 });
 
-test('ruleOfFour, negitive values', t => {
+test('#formatInteger, negitive values', t => {
   t.is(formatInteger(-0.04), '-0');
   t.is(formatInteger(-2), '-2');
   t.is(formatInteger(-4), '-4');
@@ -46,12 +69,12 @@ test('ruleOfFour, negitive values', t => {
 
 // format formatDecimal
 
-test('formatDecimal, zero', t => {
+test('#formatDecimal, zero', t => {
   t.is(formatDecimal(0), '0.00');
   t.is(formatDecimal(-0), '-0.00');
 });
 
-test('formatDecimal', t => {
+test('#formatDecimal', t => {
   t.is(formatDecimal(0.04), '0.040');
   t.is(formatDecimal(0.2), '0.200');
   t.is(formatDecimal(2), '2.00');
@@ -60,7 +83,7 @@ test('formatDecimal', t => {
   t.is(formatDecimal(40), '40.00');
 });
 
-test('formatDecimal, negitive', t => {
+test('#formatDecimal, negitive', t => {
   t.is(formatDecimal(-0.04), '-0.040');
   t.is(formatDecimal(-0.2), '-0.200');
   t.is(formatDecimal(-2), '-2.00');
@@ -71,12 +94,12 @@ test('formatDecimal, negitive', t => {
 
 // format
 
-test('format, should work for zero and neg zero', t => {
+test('#format, should work for zero and neg zero', t => {
   t.is(format(0), '0');
   t.is(format(-0), '-0');
 });
 
-test('format, rule of four', t => {
+test('#format, rule of four', t => {
   t.is(format(0.04), '0.040');
   t.is(format(0.2), '0.200');
   t.is(format(2.0001), '2.00');
@@ -85,14 +108,14 @@ test('format, rule of four', t => {
   t.is(format(40.0001), '40.00');
 });
 
-test('format, rule of four, integers', t => {
+test('#format, rule of four, integers', t => {
   t.is(format(2), '2');
   t.is(format(4), '4');
   t.is(format(20), '20');
   t.is(format(40), '40');
 });
 
-test('format, rule of four, negitive', t => {
+test('#format, rule of four, negitive', t => {
   t.is(format(-0.04), '-0.040');
   t.is(format(-0.2), '-0.200');
   t.is(format(-2), '-2');
@@ -101,12 +124,12 @@ test('format, rule of four, negitive', t => {
   t.is(format(-40), '-40');
 });
 
-test('should work for infinity and neg infinity', t => {
+test('#format, should work for infinity and neg infinity', t => {
   t.is(format(Infinity), '∞');
   t.is(format(-Infinity), '-∞');
 });
 
-test('should work for integers', t => {
+test('#format, should work for integers', t => {
   t.is(format(1), '1');
   t.is(format(10), '10');
   t.is(format(100), '100');
@@ -115,7 +138,7 @@ test('should work for integers', t => {
   t.is(format(100000), '100,000');
 });
 
-test('should work for negitive integers', t => {
+test('#format, should work for negitive integers', t => {
   t.is(format(-0), '-0');
   t.is(format(-1), '-1');
   t.is(format(-10), '-10');
@@ -125,7 +148,7 @@ test('should work for negitive integers', t => {
   t.is(format(-100000), '-100,000');
 });
 
-test('should work for large integers', t => {
+test('#format, should work for large integers', t => {
   t.is(format(1234567), '1,234,567');
   t.is(format(4234567), '4,234,567');
   t.is(format(12345678), '1.23e+7');
@@ -136,7 +159,7 @@ test('should work for large integers', t => {
   t.is(format(-42345678), '-4.2e+7');
 });
 
-test('should work for large decimals', t => {
+test('#format, should work for large decimals', t => {
   t.is(format(1234567.89), '1.23e+6');
   t.is(format(4234567.89), '4.2e+6');
   t.is(format(12345678.89), '1.23e+7');
@@ -145,4 +168,16 @@ test('should work for large decimals', t => {
   t.is(format(-4234567.89), '-4.2e+6');
   t.is(format(-12345678.89), '-1.23e+7');
   t.is(format(-42345678.89), '-4.2e+7');
+});
+
+// Constructor
+
+test('Constructor #ruleOfFour', t => {
+  const rof = new Rof(4);
+  t.is(rof.ruleOfFour(0.04), '0.04000');
+  t.is(rof.ruleOfFour(0.2), '0.20000');
+  t.is(rof.ruleOfFour(2), '2.0000');
+  t.is(rof.ruleOfFour(4), '4.000');
+  t.is(rof.ruleOfFour(20), '20.000');
+  t.is(rof.ruleOfFour(40), '40.00');
 });
