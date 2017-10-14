@@ -1,7 +1,14 @@
+/* istanbul ignore next  */
+const EPSILON = Number.EPSILON || Math.pow(2, -52);
+
 export class Rof {
   static isInteger(x: number | string): boolean {
-    x = '' + x;
-    return parseInt(x, undefined) === parseFloat(x);
+    x = +x;
+    if (x === 0) return true;
+
+    if (x < 1 && x > -1) return false;
+
+    return Math.round(x) / x - 1 <= EPSILON;
   }
 
   constructor(public basePrecision = 2) {}

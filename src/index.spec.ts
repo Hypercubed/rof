@@ -67,6 +67,11 @@ test('#formatInteger, negitive values', t => {
   t.is(formatInteger(-40), '-40');
 });
 
+test('#formatInteger, special', t => {
+  t.is(formatInteger(0.1 + 0.2), '0');
+  t.is(formatInteger((0.1 + 0.2) * 10), '3');
+});
+
 // format formatDecimal
 
 test('#formatDecimal, zero', t => {
@@ -168,6 +173,17 @@ test('#format, should work for large decimals', t => {
   t.is(format(-4234567.89), '-4.2e+6');
   t.is(format(-12345678.89), '-1.23e+7');
   t.is(format(-42345678.89), '-4.2e+7');
+});
+
+test('#format, special', t => {
+  t.is(format(0.1 + 0.2), '0.300');
+  t.is(format((0.1 + 0.2) * 10), '3');
+  t.is(format((0.1 + 0.2) * 10 - 3), '4.4e-16');
+  t.is(format(Number.EPSILON), '2.22e-16');
+  t.is(format(Number.EPSILON / 2), '1.11e-16');
+  t.is(format(Number.MAX_VALUE), '1.80e+308');
+  t.is(format(2.05 + 1.01), '3.06');
+  t.is(format((2.05 + 1.01) * 100), '306');
 });
 
 // Constructor
