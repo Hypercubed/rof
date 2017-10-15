@@ -1,7 +1,7 @@
 {
   "name": "rule-of-four",
   "version": "1.0.0",
-  "description": "Determine the most resonable display format for a given numeric value.",
+  "description": "Determine the most reasonable display format for a given numeric value.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": {
@@ -29,7 +29,8 @@
     "send-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "changelog": "chg release -y && git add -A CHANGELOG.md",
     "version": "npm-run-all changelog build",
-    "np": "npm run build && np"
+    "np": "npm run build && np",
+    "docs": "typedoc ./src/index.ts --out docs --theme minimal"
   },
   "engines": {
     "node": ">=4"
@@ -46,6 +47,7 @@
     "sleep-ms": "^2.0.1",
     "tslint": "^5.0.0",
     "tslint-config-swimlane": "^3.0.2",
+    "typedoc": "^0.9.0",
     "typescript": "^2.2.2"
   },
   "keywords": [],

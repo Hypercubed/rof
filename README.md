@@ -14,9 +14,9 @@ Coming soon?
 
 **`ruleOfFour`:** Formats a value as a decimal using the strict rule of four to determine the precision.
 
-**`formatFloat`:** Formats a value as a float (exponential) using the four to determine the precision.
+**`formatFloat`:** Formats a value as a float (exponential) using the rule of four to determine the precision.
 
-**`formatInteger`:** Formats a value as an integer or float (using `formatFloat`) for large or small values.
+**`formatInteger`:** Formats a value as an integer or float (using `formatFloat`) for large values.
 
 **`formatDecimal`:** Formats a value as a decimal or float (using `formatFloat`) for large or small values.
 

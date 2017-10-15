@@ -12,7 +12,7 @@ test('ruleOfFour', t => {
   t.is(ruleOfFour(40), '40');
 });
 
-test('ruleOfFour, negitive values', t => {
+test('ruleOfFour, negative values', t => {
   t.is(ruleOfFour(-0.04), '-0.040');
   t.is(ruleOfFour(-0.2), '-0.200');
   t.is(ruleOfFour(-2), '-2.00');
@@ -36,7 +36,7 @@ test('#formatFloat', t => {
   t.is(formatFloat(40), '4.0e+1');
 });
 
-test('#formatFloat, negitive values', t => {
+test('#formatFloat, negative values', t => {
   t.is(formatFloat(-0.04), '-4.0e-2');
   t.is(formatFloat(-2), '-2.00e+0');
   t.is(formatFloat(-4), '-4.0e+0');
@@ -59,7 +59,7 @@ test('#formatInteger', t => {
   t.is(formatInteger(40), '40');
 });
 
-test('#formatInteger, negitive values', t => {
+test('#formatInteger, negative values', t => {
   t.is(formatInteger(-0.04), '-0');
   t.is(formatInteger(-2), '-2');
   t.is(formatInteger(-4), '-4');
@@ -88,7 +88,7 @@ test('#formatDecimal', t => {
   t.is(formatDecimal(40), '40.00');
 });
 
-test('#formatDecimal, negitive', t => {
+test('#formatDecimal, negative', t => {
   t.is(formatDecimal(-0.04), '-0.040');
   t.is(formatDecimal(-0.2), '-0.200');
   t.is(formatDecimal(-2), '-2.00');
@@ -120,7 +120,7 @@ test('#format, rule of four, integers', t => {
   t.is(format(40), '40');
 });
 
-test('#format, rule of four, negitive', t => {
+test('#format, rule of four, negative', t => {
   t.is(format(-0.04), '-0.040');
   t.is(format(-0.2), '-0.200');
   t.is(format(-2), '-2');
@@ -143,7 +143,7 @@ test('#format, should work for integers', t => {
   t.is(format(100000), '100,000');
 });
 
-test('#format, should work for negitive integers', t => {
+test('#format, should work for negative integers', t => {
   t.is(format(-0), '-0');
   t.is(format(-1), '-1');
   t.is(format(-10), '-10');
@@ -210,28 +210,26 @@ test('Constructor #ruleOfFour', t => {
 
 // Best
 test('#pickFormat', t => {
-  // integers
+  const _ = arr => arr.map(pickFormat(arr));
+
+  // formatInteger
   t.deepEqual(_([ 0,   1,   2,   3,   -1,   -2,   -3]),   
                 ['0', '1', '2', '3', '-1', '-2', '-3']);
 
-  // floats (integers) 
+  // formatFloat (integers) 
   t.deepEqual(_([0,          1,         2,         3,         123456789, -123456789]),  
                 ['0.00e+0', '1.00e+0', '2.00e+0', '3.00e+0', '1.23e+8', '-1.23e+8']);
 
-  // precision (decimals)    
+  // formatDecimal (toPrecision)    
   t.deepEqual(_([ 0,      1,      2,      3,      0.4,    -0.4,    3.1,    -3.1]),
                 ['0.00', '1.00', '2.00', '3.00', '0.40', '-0.40', '3.10', '-3.10']);
 
-  // decimals  
+  // formatDecimal
   t.deepEqual(_([ 0,      1,      2,      3,      0.1,     0.001]),
                 ['0.00', '1.00', '2.00', '3.00', '0.100', '0.00100']);
 
-  // floats (decimals)
+  // formatFloat (decimals)
   t.deepEqual(_([0,         1,         2,         3,         0.1,       0.001,     1e-7,      -1e-7]),      
                ['0.00e+0', '1.00e+0', '2.00e+0', '3.00e+0', '1.00e-1', '1.00e-3', '1.00e-7', '-1.00e-7']);
 
-  function _(arr) {
-    const fn = pickFormat(arr);
-    return arr.map(fn);
-  }
 });
