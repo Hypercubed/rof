@@ -6,12 +6,12 @@
   "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rule-of-four"
+    "url": "https://github.com/rof"
   },
   "bugs": {
-    "url": "https://github.com/rule-of-four/issues"
+    "url": "https://github.com/rof/issues"
   },
-  "homepage": "https://github.com/rule-of-four#readme",
+  "homepage": "https://github.com/rof#readme",
   "author": "J. Harshbarger",
   "license": "MIT",
   "files": [
