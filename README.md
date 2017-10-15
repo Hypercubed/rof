@@ -1,16 +1,55 @@
 # Rule of Four
 
-Determine the most reasonable display format for a given numeric value. Using a modified version of the [rule of four](http://www.bmj.com/content/350/bmj.h1845) and other methods.
+Determine the most reasonable display format for a given numeric value or set of numeric values. Using a modified version of the [rule of four](http://www.bmj.com/content/350/bmj.h1845) and other methods.
 
-Goals:
-  * Preserve display for integers and floats.
-  * Limit to a precision of 2 or 3 following the rule of four.
-  * Display the smaller of fixed or exponential formatting.
+## Introduction
 
-Coming soon?
-  * Determine optimal format give an array of values.
+Ideally, when working numeric data, one should know the precision of the underlying data and display those values appropriately.  However, when developing software it is not always possible to pre-determine the precision. In addition, when using JavaScript, numbers are not often displayed as one would expect.  Take for example the following values and three common methods for generating a display string in JavaScript.
 
-# Methods
+|               Input Value |                toLocaleString |    toPrecision (N=3) |        toExponential (N=2) |
+|               ----------- |                -------------- |    ----------------- |               ------------ |
+|                      0.04 |                          0.04 |               0.0400 |              4.00e-2 |
+|                       0.2 |                           0.2 |                0.200 |              2.00e-1 |
+|                   20.0001 |                            20 |                 20.0 |              2.00e+1 |
+|                         2 |                             2 |                 2.00 |              2.00e+0 |
+|                        20 |                            20 |                 20.0 |              2.00e+1 |
+|                   1.2e+21 | 1,200,000,000,000,000,000,000 |             1.20e+21 |             1.20e+21 |
+|             1234567891234 |             1,234,567,891,234 |             1.23e+12 |             1.23e+12 |
+|                  0.002555 |                         0.003 |              0.00255 |              2.55e-3 |
+|                0.00006777 |                             0 |            0.0000678 |              6.78e-5 |
+
+Some issues we notices are:
+
+* `toLocaleString` has inconsistent precision.  In many cases (for example 0.00255 and 2.00001) `toLocaleString` provides too low precision, in others (for example 1234567891234) the precision is unnecessarily high.
+* All three methods make no distinction between integers, decimal, and floating point values.
+* `toLocaleString` highly has inconsistent string size.  For example, displaying 1.2e+21 as a decimal results in an unnecessarily long string.
+
+Additionally, given a set of values, the values should be formatted consistently for comparison to each other.
+
+Therefore, the goals of this project are:
+
+* Determine the display precision in a predictable manner.
+* Preserve (as much as possible) display for integers, decimals, and floats.
+* Display the smallest string necessary for the value.
+* Given a set of values, determine the most consistent display format across the set.
+
+To this end, this library makes use or the "rule of four" described in [Setting number of decimal places for reporting risk ratios: rule of four](http://www.bmj.com/content/350/bmj.h1845).  The rule of four is a simple method for determining appropriate number of decimal places to use when reporting risk ratios.  The rule states “Round the risk ratio to two significant digits if the leading non-zero digit is four or more, otherwise round to three;”.  We extend the rule here to other values.
+
+## Getting Started
+
+### Installing
+
+```bash
+npm install rof
+```
+
+The core formatting methods (with default options) can be imported directly:
+
+```js
+import { ruleOfFour, format, formatInteger, formatDecimal, formatFloat, pickFormat } from '.';
+```
+
+### Summary of Methods
 
 **`ruleOfFour`:** Formats a value as a decimal using the strict rule of four to determine the precision.
 
@@ -22,14 +61,13 @@ Coming soon?
 
 **`format`:** Formats a value as an integer (using `formatInteger`) or a decimal (using `formatDecimal`) if the value is not an integer.
 
-## `ruleOfFour` function
+**`pickFormat`:** Given an array of values, returns the best formatter method, from among the following three methods: `formatFloat`, `formatInteger`, and `formatDecimal`.
 
-```
-ruleOfFour(x: number): string
-```
+## API Reference
 
-> The rule states: “Round the risk ratio to two significant digits if the leading non-zero digit is four or more, otherwise round to three;” it uses three decimal places for ratios in the range 0.040-0.399, two decimals for 0.40-3.99, one decimal for 4.0-39.9, and so on.
-> -- [Setting number of decimal places for reporting risk ratios: rule of four](http://www.bmj.com/content/350/bmj.h1845).
+### `ruleOfFour(x: number): string`
+
+Formats a value as a decimal using the strict rule of four to determine the precision.
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |
 |               ----------- |       -------------- |    ----------------- |         ------------ |
@@ -49,16 +87,12 @@ ruleOfFour(x: number): string
 |                  Infinity |                    ∞ |             Infinity |             Infinity |
 |                 -Infinity |                   -∞ |            -Infinity |            -Infinity |
 
-## `formatFloat` function
+### `formatFloat(x: number): string`
 
-```
-formatFloat(x: number): string
-```
+Returns the value formatted as a floating point value using the following rules:
 
-The `formatFloat` function returns the value formatted with the following rules:
-
-* `-0.00e+0` if the value is `-0`.
-* `x.toExponential(N)` (where N is the precision following the rule of four) otherwise
+* If `x === -0` returns `-0.00e+0`
+* otherwise returns `x.toExponential(N)` (where N is the precision following the rule of four)
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |          formatFloat |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -78,17 +112,13 @@ The `formatFloat` function returns the value formatted with the following rules:
 |                  Infinity |                    ∞ |             Infinity |             Infinity |             Infinity |
 |                 -Infinity |                   -∞ |            -Infinity |            -Infinity |            -Infinity |
 
-## `formatInteger` function
+### `formatInteger(x: number): string`
 
-```
-formatInteger(x: number): string
-```
+Returns the value formatted as an integer using with the following rules:
 
-The `formatInteger` function returns the value formatted with the following rules:
-
-* `-0` if the `Math.round(x)` is `-0`.
-* `Math.round(x).toLocaleString()` if the character length is <= 9.
-* `formatFloat(Math.round(x))` otherwise.
+* If the `Math.round(x) === -0` returns `-0`
+* if the resulting character length is <= 9 returns `Math.round(x).toLocaleString()`
+* otherwise, `formatFloat(Math.round(x))`
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |        formatInteger |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -108,18 +138,14 @@ The `formatInteger` function returns the value formatted with the following rule
 |                  Infinity |                    ∞ |             Infinity |             Infinity |                    ∞ |
 |                 -Infinity |                   -∞ |            -Infinity |            -Infinity |                   -∞ |
 
-## `formatDecimal` function
+### `formatDecimal(x: number): string`
 
-```
-formatDecimal(x: number): string
-```
+Returns the value formatted as a decimal using with the following rules:
 
-The `formatDecimal` function returns the value formatted with the following rules:
-
-* `-0.00` if the value is `-0`.
-* `x.toPrecision(N)` (where N is the precision following the rule of four) if `Math.abs(x) < 0.4` and the character length is <= 9.
-* `x.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})` if `Math.abs(x) >= 0.4` and the character length is <= 9.
-* `formatFloat(x)` otherwise.
+* If the value is `-0`, returns `-0.00`
+* if `Math.abs(x) < 0.4` and the resulting character length is <= 9, returns `x.toPrecision(N)` (where N is the precision following the rule of four)
+* if `Math.abs(x) >= 0.4` and the resulting character length is <= 9, returns `x.toLocaleString(locales, {minimumFractionDigits: 2, maximumFractionDigits: 2})` 
+* otherwise, returns `formatFloat(x)`.
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |        formatDecimal |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -139,16 +165,12 @@ The `formatDecimal` function returns the value formatted with the following rule
 |                  Infinity |                    ∞ |             Infinity |             Infinity |                    ∞ |
 |                 -Infinity |                   -∞ |            -Infinity |            -Infinity |                   -∞ |
 
-## `format` function
+### `format(x: number): string`
 
-```
-format(x: number): string
-```
+Returns the value formatted with the following rules:
 
-The `format` function returns the value formatted with the following rules:
-
-* Returns `formatInteger(x)` if `x` is an integer defined by `parseInt(x) === parseFloat(x)`.
-* Returns `formatDecimal(x)` otherwise.
+* If `x` is an integer (within a given threshold) returns `formatInteger(x)` .
+* otherwise, returns `formatDecimal(x)`.
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |               format |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -170,7 +192,7 @@ The `format` function returns the value formatted with the following rules:
 
 Other sample outputs below:
 
-### Integers
+#### Integers
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |               format |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -207,7 +229,7 @@ Other sample outputs below:
 |                 -63377713 |          -63,377,713 |             -6.34e+7 |              -6.3e+7 |              -6.3e+7 |
 |                -314199248 |         -314,199,248 |             -3.14e+8 |             -3.14e+8 |             -3.14e+8 |
 
-### Decimals and Floats
+#### Decimals and Floats
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |               format |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -280,7 +302,7 @@ Other sample outputs below:
 |      -9.78731507500792e-9 |                   -0 |             -9.79e-9 |              -9.8e-9 |              -9.8e-9 |
 |     -2.195914860919613e-8 |                   -0 |             -2.20e-8 |             -2.20e-8 |             -2.20e-8 |
 
-### Special
+#### Special
 
 |               Input Value |       toLocaleString |    toPrecision (N=3) |         Rule of Four |               format |
 |               ----------- |       -------------- |    ----------------- |         ------------ |               ------ |
@@ -291,3 +313,41 @@ Other sample outputs below:
 |                         E |                2.718 |                 2.72 |                 2.72 |                 2.72 |
 |                     SQRT2 |                1.414 |                 1.41 |                 1.41 |                 1.41 |
 |                   EPSILON |                    0 |             2.22e-16 |             2.22e-16 |             2.22e-16 |
+
+### `pickFormat(arr: number[]): function`
+
+Given an array of values, returns the best formatting method using the following rules:
+
+* If all values are integers:
+  * and the maximum `Log10` of the values is <= 6, returns `formatInteger`.
+  * otherwise, returns `formatFloat`.
+* If not all values are integers:
+  * and the maximum `Log10` of the values is >= 6 or minimum `Log10` of the values <= -6, returns `formatFloat`
+  * otherwise, returns `formatDecimal`
+
+### `RofFormat` class
+
+The RofFormat object is a constructor encapsulating the methods above and allowing customization.
+
+```
+new RofFormat(locales?: string | string[], options?: RofFormatOptions)
+```
+
+`locales` parameter is a string or array passed to internal usage of [NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat).
+
+`options` operator is an object with some or all of the following properties:
+
+**minimumSignificantDigits**
+The minimum number of integer digits to use. The default is `2`.
+
+**maximumSignificantDigits**
+The maximum number of significant digits to use. The default is `minimumSignificantDigits + 1`
+
+**integerThreshold**
+The threshold used to determine if a value is an integer.  The default is `Number.EPSILON`.
+
+Other `options` values are passed to internal usage of [NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat).
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details

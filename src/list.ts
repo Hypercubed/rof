@@ -1,4 +1,4 @@
-import { ruleOfFour, format, formatInteger, formatDecimal, formatFloat, Rof } from '.';
+import { ruleOfFour, format, formatInteger, formatDecimal, formatFloat, RofFormat } from '.';
 
 const headings = ['Input Value', 'toLocaleString', 'toPrecision (N=3)', 'Rule of Four', 'format'];
 
@@ -22,6 +22,15 @@ const base = [
   Infinity,
   -Infinity
 ];
+
+console.log('\n## Intro\n');
+
+console.log(formatRow([...headings.slice(0, 4), 'toExponential (N = 2)']));
+console.log(formatRow(headings.map(x => x.replace(/./g, '-'))));
+
+[...base, 1234567891234, 0.002555, 0.00006777].forEach(n => {
+  printRow(n, undefined, x => x.toExponential(2));
+});
 
 console.log('\n## ruleOfFour\n');
 

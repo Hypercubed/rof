@@ -1,19 +1,27 @@
-export interface RofOptions extends Intl.NumberFormatOptions {
+export interface RofFormatOptions extends Intl.NumberFormatOptions {
   integerThreshold?: number;
 }
 
-export interface RofResolvedOptions extends Intl.NumberFormatOptions {
+export interface RofFormatResolvedOptions extends Intl.NumberFormatOptions {
   integerThreshold: number;
   minimumSignificantDigits: number;
   maximumSignificantDigits: number;
 }
 
-export class Rof {
+/** Class encapsulating formatting rules */
+export class RofFormat {
   private intNumberFormat: Intl.NumberFormat;
   private decNumberFormat: Intl.NumberFormat;
-  private options: RofResolvedOptions;
+  private options: RofFormatResolvedOptions;
 
-  constructor(locales?: string | string[], options?: RofOptions) {
+  /**
+   * Create a Rof object
+   * @param {string | string[]} locales? 
+   *  A string with a BCP 47 language tag, or an array of such strings.
+   * For the general form and interpretation of the locales argument, see the Intl page.
+   * @param {RofFormatOptions} options? - An object with some or all of the options properties.
+   */
+  constructor(locales?: string | string[], options?: RofFormatOptions) {
     this.options = {
       minimumSignificantDigits: 2,
       integerThreshold: Number.EPSILON,
@@ -42,8 +50,8 @@ export class Rof {
    * Formats a value as an integer (using `formatInteger`)
    * or a decimal (using `formatDecimal`) if the value is not an integer.
    * 
-   * @param x  The number to format.
-   * @returns  A string with a formatted representation of the given number.
+   * @param x - The number to format.
+   * @returns A string with a formatted representation of the given number.
    */
   format = (x: number): string => {
     return this.isInteger(x) ? this.formatInteger(x) : this.formatDecimal(x);
@@ -127,11 +135,11 @@ export class Rof {
    * Given an array of values, returns the best formatter method
    * 
    * @param arr  The values used to determine the optimal formatting method
-   * @returns    The optimal formatting method
+   * @returns {Function} The optimal formatting method
    */
   pickFormat = (arr: number[]): string | any => {
     const stats = this.getStats(arr);
-    if (stats.integers) return (stats.maxLog > 6) ? this.formatFloat : this.formatInteger;
+    if (stats.integers) return (stats.maxLog <= 6) ? this.formatInteger : this.formatFloat;
     if (stats.maxLog >= 6 || stats.minLog <= -6) {
       return this.formatFloat;
     }
@@ -157,7 +165,7 @@ export class Rof {
    * Given an array of values, returns statistics needed to determine the best formatter method
    * 
    * @param arr  The values used to determine the optimal formatting method
-   * @returns    The statistics needed to determine the best formatting method
+   * @returns {object}    The statistics needed to determine the best formatting method
    */
   private getStats(arr: number[]): any {
     let integers = true;
@@ -182,8 +190,8 @@ export class Rof {
   /**
    * Given an number, returns the precision using the role of four
    * 
-   * @param x  The number.
-   * @returns  A Number indicating the precision using the role of four
+   * @param x The number.
+   * @returns A Number indicating the precision using the role of four
    */
   private getRofPrecision(x: number): number {
     const match = ('' + x).match(/[1-9]/);
@@ -204,7 +212,7 @@ export class Rof {
   }
 }
 
-const rof = new Rof();
+const rof = new RofFormat();
 
 export const ruleOfFour = rof.ruleOfFour;
 export const formatDecimal = rof.formatDecimal;

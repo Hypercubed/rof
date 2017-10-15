@@ -1,5 +1,5 @@
 import { test } from 'ava';
-import { format, ruleOfFour, formatInteger, formatDecimal, formatFloat, pickFormat, Rof } from '.';
+import { format, ruleOfFour, formatInteger, formatDecimal, formatFloat, pickFormat, RofFormat } from '.';
 
 // role of four
 
@@ -189,7 +189,7 @@ test('#format, special', t => {
 // Constructor
 
 test('Constructor #ruleOfFour, defaults', t => {
-  const rof = new Rof();
+  const rof = new RofFormat();
   t.is(rof.ruleOfFour(0.04), '0.040');
   t.is(rof.ruleOfFour(0.2), '0.200');
   t.is(rof.ruleOfFour(2), '2.00');
@@ -199,7 +199,7 @@ test('Constructor #ruleOfFour, defaults', t => {
 });
 
 test('Constructor #ruleOfFour', t => {
-  const rof = new Rof(undefined, {minimumSignificantDigits: 4, maximumSignificantDigits: 6});
+  const rof = new RofFormat(undefined, {minimumSignificantDigits: 4, maximumSignificantDigits: 6});
   t.is(rof.ruleOfFour(0.04), '0.04000');
   t.is(rof.ruleOfFour(0.2), '0.200000');
   t.is(rof.ruleOfFour(2), '2.00000');

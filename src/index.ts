@@ -1,8 +1,8 @@
-import { Rof } from './Rof';
+import { RofFormat } from './RofFormat';
 
-export * from './Rof';
+export * from './RofFormat';
 
-const rof = new Rof();
+const rof = new RofFormat();
 
 export const ruleOfFour = rof.ruleOfFour;
 export const formatDecimal = rof.formatDecimal;
